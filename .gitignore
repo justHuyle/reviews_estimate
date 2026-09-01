@@ -1,0 +1,8 @@
+# E-Commerce Review Analyzer
+*.pkl
+*.csv
+*.joblib
+__pycache__/
+*.pyc
+.env
+.venv/
