@@ -1,11 +1,12 @@
 from flask import Flask, request, jsonify, render_template, send_from_directory
 import joblib
+import pandas as pd
 import os
 import re
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
-# Load Pipeline đã lưu (TF-IDF + Logistic Regression)
+# Load Pipeline đã lưu (ColumnTransformer + Logistic Regression)
 MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "artifacts_ecommerce_review_model.joblib")
 model = joblib.load(MODEL_PATH)
 
@@ -50,9 +51,18 @@ def predict():
             }), 400
 
         # --- Preprocessing + Prediction ---
-        # Pipeline đã bao gồm TF-IDF vectorizer → Logistic Regression
-        prediction = model.predict([review])[0]
-        probabilities = model.predict_proba([review])[0]
+        # Model pipeline cần DataFrame với các cột:
+        # Age, Positive Feedback Count, Review_Length, Department Name, Review Text
+        input_df = pd.DataFrame([{
+            "Age": data.get("age", 30),
+            "Positive Feedback Count": data.get("positive_feedback_count", 0),
+            "Review_Length": len(review),
+            "Department Name": data.get("department_name", "General"),
+            "Review Text": review
+        }])
+
+        prediction = model.predict(input_df)[0]
+        probabilities = model.predict_proba(input_df)[0]
 
         # Classes: [0, 1] → [Negative, Positive]
         positive_prob = float(probabilities[1])
