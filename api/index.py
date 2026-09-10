@@ -8,7 +8,7 @@ app = Flask(__name__,
             template_folder=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates'))
 
 # Load Pipeline đã lưu (TF-IDF + Logistic Regression)
-MODEL_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "ecommerce_preference_model.pkl")
+MODEL_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "artifacts_ecommerce_review_model.joblib")
 model = joblib.load(MODEL_PATH)
 
 
